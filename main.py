@@ -9,7 +9,7 @@ MIN_BET = 1
 ROWS = 3
 COLS = 3
 
-
+# Number of symbols that are possible of appearing at once 
 symbol_count = {
     "A": 3,
     "B": 6,
@@ -17,7 +17,7 @@ symbol_count = {
     "D": 12
 }
 
-
+# Multiplier valuee of each symbol
 symbol_value = {
     "A": 5,
     "B": 4,
@@ -31,20 +31,20 @@ class Player:
         self.name = name
         self.balance = balance
 
-
+# After creating the player in the Game Loop, their info is saved here and a file is made
 def save_player(player):
     with open("player_data.pickle", "wb") as f:
         pickle.dump(player, f)
         f.close()
 
-
+# This loads the player's information so that their past games.
 def load_player():
     with open("player_data.pickle", "rb") as f:
         player = pickle.load(f)
     
     return player
 
-
+# Returns how much money was made and which lines won
 def check_winnings(columns, lines, bet, values):
     winnings = 0
     winning_lines = []
@@ -61,10 +61,11 @@ def check_winnings(columns, lines, bet, values):
             else:
                 winnings += values[symbol] * bet
                 winning_lines.append(lines + 1)
+
     return winnings, winning_lines
 
-
-def get_slot_machine_spim(rows, cols, symbols):
+# Creates Slot machine
+def get_slot_machine_spin(rows, cols, symbols):
     all_symbols = []
 
     for symbol, symbol_count in symbols.items():
@@ -86,7 +87,7 @@ def get_slot_machine_spim(rows, cols, symbols):
 
     return columns
 
-
+# Prints out the slot machine
 def print_slot_maching(columns):
     for row in range(len(columns[0])):
         for i, column in enumerate(columns):
@@ -97,7 +98,7 @@ def print_slot_maching(columns):
 
         print()
 
-
+# Allows user to deposit "money" into their account
 def deposit():
     while True:
         amount = input("How much would you like to deposit? $")
@@ -116,10 +117,10 @@ def deposit():
     
     return amount
 
-
+# This selects which lines the player is betting on. 1 line is the top row, 2 lines are the top 2 rows and 3 lines for all 3 rows
 def get_number_of_lines():
     while True:
-        lines = input("Enter the number of lines on (1- " + str(MAX_LINES) + ")? ")
+        lines = input("Enter the number of lines on 1 - " + str(MAX_LINES) + ")? ")
 
         if lines.isdigit():
             lines = int(lines)
@@ -135,7 +136,7 @@ def get_number_of_lines():
     
     return lines    
 
-
+# Asks the user to input a bet for the spin
 def get_bet():
     while True:
         bet_amount = input("How much would you like to bet on each line? (Press [D] to deposit more money) $")
@@ -157,7 +158,8 @@ def get_bet():
     
     return bet_amount    
 
-
+# Spins the slot machine after checking if there are enough funds in the player's account.
+# Once the machine is spun, it displays how much money was won or lost
 def spin(balance):
     lines = get_number_of_lines()
     
@@ -172,7 +174,7 @@ def spin(balance):
 
     print(f"You are betting ${bet} on {lines}. Total bet is equal to : ${total_bet}")
 
-    slots = get_slot_machine_spim(ROWS, COLS, symbol_count)
+    slots = get_slot_machine_spin(ROWS, COLS, symbol_count)
     print_slot_maching(slots)
 
     winnings, winning_lines = check_winnings(slots, lines, bet, symbol_value)
@@ -181,7 +183,7 @@ def spin(balance):
 
     return winnings - total_bet
 
-
+# This is my main Game Loop
 def Game():
     answer = 0
     play_again = 'y'
